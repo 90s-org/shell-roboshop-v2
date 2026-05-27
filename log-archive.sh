@@ -39,11 +39,17 @@ while IFS= read -r FILE; do
     echo "  Adding: $FILE"
 done <<< "$FILES"
 
-tar -czf "$ARCHIVE_PATH" $FILES
+tar -czf "$ARCHIVE_PATH" -C "$SOURCE_DIR" $(echo "$FILES" | xargs -I{} basename {})
 
 if [ $? -eq 0 ]; then
     echo "Archive created: $ARCHIVE_PATH"
+    echo "Deleting archived files from '$SOURCE_DIR'..."
+    while IFS= read -r FILE; do
+        rm -f "$FILE"
+        echo "  Deleted: $FILE"
+    done <<< "$FILES"
+    echo "Cleanup complete."
 else
-    echo "ERROR: Failed to create archive."
+    echo "ERROR: Failed to create archive. Files not deleted."
     exit 1
 fi
