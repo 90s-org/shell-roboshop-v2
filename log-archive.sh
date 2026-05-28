@@ -39,6 +39,7 @@ while IFS= read -r FILE; do
     echo "  Adding: $FILE"
 done <<< "$FILES"
 
+# tar -czf "$ARCHIVE_PATH" $FILES
 tar -czf "$ARCHIVE_PATH" -C "$SOURCE_DIR" $(echo "$FILES" | xargs -I{} basename {})
 
 if [ $? -eq 0 ]; then
